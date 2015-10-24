@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+
+import glob
+import inklevel
+import sys
+
+
+USB_PREFIX = '/dev/usb/lp'
+PARPORT_PREFIX = '/dev/parport'
+
+
+def main():
+    if '--fake-empty' in sys.argv:
+        data = {}
+    elif '--fake-data' in sys.argv:
+        data = fake_inklevel_data()
+    else:
+        data = collect_inklevel_data()
+
+    if data:
+        print_header()
+        print_data(data)
+
+
+def print_header():
+    print('<<<printer_inklevels:sep(9)>>>')
+
+
+def print_data(data):
+    for path in sorted(data):
+        entry = data[path]
+        print_inklevel_entry(path, entry)
+
+
+def print_inklevel_entry(path, entry):
+    print('{}\tmodel\t{}'.format(path, entry.model))
+    for level in entry.levels:
+        cartridge, value = level
+        print('{}\tlevel\t{}\t{}'.format(path, cartridge.description, value))
+
+
+def collect_inklevel_data():
+    data = {}
+    for path, portnumber in get_printers_with_port(USB_PREFIX):
+        try:
+            data[path] = inklevel.get_usb_ink_level(portnumber)
+        except Exception as e:
+            print('{} error {}'.format(path, str(e)))
+
+    for path, portnumber in get_printers_with_port(PARPORT_PREFIX):
+        try:
+            data[path] = inklevel.get_parport_ink_level(portnumber)
+        except Exception as e:
+            print('{} error {}'.format(path, str(e)))
+
+    return data
+
+
+def fake_inklevel_data():
+    return {
+        '/dev/usb/lp0': inklevel.Inklevel(
+            model='Wooden printing press',
+            levels=[
+                (inklevel.CartridgeType.BLACK, 23),
+                (inklevel.CartridgeType.COLOR, 57),
+            ],
+        ),
+        '/dev/usb/lp666': inklevel.Inklevel(
+            model='Evil printing press',
+            levels=[(inklevel.CartridgeType.RED, 13)],
+        ),
+    }
+
+
+def get_printers_with_port(prefix):
+    paths = glob.glob(prefix + u'*')
+    for path in paths:
+        port = path.replace(prefix, u'')
+        if port.isnumeric():
+            yield (path, int(port))
+
+
+if __name__ == '__main__':
+    main()

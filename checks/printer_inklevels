@@ -1,0 +1,80 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+# Example output from agent:
+# <<<printer_inklevels:sep(9)>>>
+# /dev/usb/lp0	model	Wooden printing press
+# /dev/usb/lp0	level	Black	20
+# /dev/usb/lp0	level	Color	53
+# /dev/666	model	Evil printing press
+# /dev/666	level	Red	7
+
+
+printer_inklevels_default_values = (10, 5)
+
+
+def inventory_printer_inklevels(info):
+    parsed_info = _parse_printer_inklevels_info(info)
+
+    return [(device, 'printer_inklevels_default_values') for device in parsed_info]
+
+
+def check_printer_inklevels(item, params, info):
+    warn, crit = params
+    parsed_info = _parse_printer_inklevels_info(info)
+
+    if item not in parsed_info:
+        return 3, 'Unknown printer {}'.format(item)
+
+    model = parsed_info[item]['model']
+    levels = parsed_info[item]['levels']
+
+    status = 0
+    output = []
+    perfdata = []
+
+    for level in levels:
+        name = level[0]
+        value = int(level[1])
+        level_status = 0
+        status_marker = ''
+
+        if value <= crit:
+            level_status = 2
+            status_marker = '(!!)'
+        elif value <= warn:
+            level_status = 1
+            status_marker = '(!)'
+
+        status = max(status, level_status)
+        output.append('{}: {}%{}'.format(name, value, status_marker))
+        perfdata.append((name, value, warn, crit, 0, 100))
+
+    message = '{} - {}'.format(model, ', '.join(output))
+
+    return (status, message , perfdata)
+
+
+def _parse_printer_inklevels_info(info):
+    parsed_info = {}
+    for line in info:
+        device = line[0]
+        field = line[1]
+        data = line[2:]
+        if device not in parsed_info:
+            parsed_info[device] = {'levels': [], 'model': 'unknown'}
+        if field == 'model':
+            parsed_info[line[0]]['model'] = data[0]
+        elif field == 'level':
+            name, level = data
+            parsed_info[line[0]]['levels'].append((name, level))
+
+    return parsed_info
+
+
+check_info["printer_inklevels"] = {
+    "check_function"        : check_printer_inklevels,
+    "inventory_function"    : inventory_printer_inklevels,
+    "service_description"   : "Inklevels of %s",
+    "has_perfdata"          : True,
+}
