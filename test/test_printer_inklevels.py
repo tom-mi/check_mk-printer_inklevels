@@ -1,6 +1,7 @@
 import pytest
 
 from pytest_check_mk import OK, WARNING, CRITICAL, UNKNOWN
+from pytest_check_mk.assertions import *
 
 
 test_for = 'printer_inklevels'
@@ -14,6 +15,11 @@ check_output = '''
 /dev/666\tmodel\tEvil printing press
 /dev/666\tlevel\tRed\t7
 '''
+
+
+@pytest.fixture
+def check(checks):
+    return checks['printer_inklevels']
 
 
 def test_settings(check):
@@ -32,8 +38,8 @@ def test_inventory(check):
     ]
 
 
-def test_default_values(check):
-    assert check.module.printer_inklevels_default_values == (10, 5)
+def test_default_values(checks):
+    assert checks.module.printer_inklevels_default_values == (10, 5)
 
 
 def test_check_unknown_item(check):
@@ -77,12 +83,12 @@ def test_check_perfdata(check):
 
 
 def test_consistency(check):
-    check.assert_inventory_and_check_works_with_check_output(check_output)
+    assert_inventory_and_check_works_with_check_output(check, check_output)
 
 
-def test_with_fake_agent_output(agent, check):
-    check.assert_inventory_and_check_works_with_check_output(agent.run('--fake-data'))
+def test_with_fake_agent_output(agent_plugin, check):
+    assert_inventory_and_check_works_with_check_output(check, agent_plugin.run('--fake-data'))
 
 
-def test_empty_agent_output(agent):
-    assert agent.run('--fake-empty') == ''
+def test_empty_agent_output(agent_plugin):
+    assert agent_plugin.run('--fake-empty') == ''
