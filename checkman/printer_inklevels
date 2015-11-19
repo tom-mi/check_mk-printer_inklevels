@@ -1,0 +1,31 @@
+title: Inklevels of printers
+agents: linux
+catalog: hw/printer
+license: GPL
+distribution: none
+description:
+ This check measures the ink levels of printer cartridges.
+
+ You need to install the plugin {printer_inklevels} into the {plugins}
+ directory of your agent. Also, you need to install {libinklevel} and
+ the python wrapper {inklevel} (install via pip).
+
+ Only printers recognized by libinklevel using USB or a parallel port are
+ supported.
+
+item:
+ The device path of the printer.
+
+example:
+ # set default levels to 60 and 40 percent:
+ printer_inklevels_default_values = (60, 40)
+
+perfdata:
+ The printer inklevel per cartridge in percent.
+
+inventory:
+ One check is created for each detected printer.
+
+[configuration]
+printer_inklevels_default_values (int, int): Default threshold levels (warning,
+    critical). Preset to (10, 5).
