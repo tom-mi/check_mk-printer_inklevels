@@ -69,12 +69,12 @@ def check_printer_inklevels(item, params, info):
 
     message = '{} - {}'.format(model, ', '.join(output))
 
-    return (status, message , perfdata)
+    return (status, message, perfdata)
 
 
-check_info["printer_inklevels"] = {
-    "check_function"        : check_printer_inklevels,
-    "inventory_function"    : inventory_printer_inklevels,
-    "service_description"   : "Inklevels of %s",
-    "has_perfdata"          : True,
+check_info['printer_inklevels'] = {
+    'check_function': check_printer_inklevels,
+    'inventory_function': inventory_printer_inklevels,
+    'service_description': 'Inklevels of %s',
+    'has_perfdata': True,
 }

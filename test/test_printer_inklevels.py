@@ -1,7 +1,7 @@
 import pytest
 
 from pytest_check_mk import OK, WARNING, CRITICAL, UNKNOWN
-from pytest_check_mk.assertions import *
+from pytest_check_mk.assertions import assert_inventory_and_check_works_with_check_output
 
 
 test_for = 'printer_inklevels'
@@ -23,7 +23,7 @@ def check(checks):
 
 
 def test_settings(check):
-    assert check.has_perfdata == True
+    assert check.has_perfdata
     assert check.service_description == 'Inklevels of %s'
 
 
@@ -86,9 +86,9 @@ def test_consistency(check):
     assert_inventory_and_check_works_with_check_output(check, check_output)
 
 
-def test_with_fake_agent_output(agent_plugin, check):
-    assert_inventory_and_check_works_with_check_output(check, agent_plugin.run('--fake-data'))
+def test_with_fake_agent_output(agents, check):
+    assert_inventory_and_check_works_with_check_output(check, agents['plugins/printer_inklevels'].run('--fake-data'))
 
 
-def test_empty_agent_output(agent_plugin):
-    assert agent_plugin.run('--fake-empty') == ''
+def test_empty_agent_output(agents):
+    assert agents['plugins/printer_inklevels'].run('--fake-empty') == ''
