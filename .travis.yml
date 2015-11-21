@@ -8,6 +8,8 @@ install:
 - pip install --upgrade -r dev-requirements.txt
 script:
 - py.test
+before_deploy:
+- gem install mime-types -v 2.6.2
 deploy:
   provider: releases
   api_key:
