@@ -5,3 +5,8 @@ install:
     - pip install --upgrade -r dev-requirements.txt
 script:
     - py.test
+
+addons:
+  apt:
+    packages:
+    - libinklevel
