@@ -2,3 +2,5 @@ pytest
 pytest-flakes
 pytest-pep8
 inklevel
+pytest-check-mk
+mkp
