@@ -10,11 +10,13 @@ script:
 - py.test
 before_deploy:
 - gem install mime-types -v 2.6.2
+- ./dist.py
 deploy:
   provider: releases
   api_key:
     secure: EG7tsxKrGIdgpDelgTZz/LTTW46rtm2RD7FXWkoxHD9YDZyzECmWIKTlbZP3IQM4Q4bKfVpsUi616kJBY3J3t6uZ0vrruBSFdvQouQN/DZIrfKmx6dKFvADTTpYUORa0O3NtSd0zWyQqHMcVgaIucstZX8JQJ6cWqbnx4Z3+rp9JdjikDmDjtuR6CSMNVii6LgB1OEJcXVNuNQ6TVFi5I+LzHfig1wx1FCFIyVxocArFUG6CqzX1153bidKtLuhymHSZu1uBvTXb1YpQCEh6JM/JSLy6t/KoXVmUm5VtPAuV//Lfx71gqpTaqkTwYHH57t6QVbu7K36ESBUukLldoGNdwbGaQTRwrhlOIbvh75xUix44Mtj0eZEscbTEq3fK5qMRHHpLk2pzA/eIOGTx3jHivmQysMkfW2gOdhktF9wF+hC6jr3MgdZjPnOV2692j5RfwDiip0hMFWxDhps3kZoW+R1pwvnqZe36GE9c4PgvU2bEmwjVCs2KC02Ib/Wpmri9lvQRYG1QgF+5l1FkAybwvmTHBiZO3aYd5xsFc4W3Wf13oP3PDm+BSjDL0BhhD/eZTC/rfKckV/+wQ7w2A8+bZF8AeLRtlYbLL3mwXbS9yOAKGw7jO0MnsX99i8uMHJPYTH9VU5j7l3JPCpE2JmwaplFQskOKiAukBxJZwbc=
-  file: dist/printer_inklevels-*.mkp
+  file:
+    - dist/printer_inklevels-*.mkp
   file_glob: true
   skip_cleanup: true
   on:
