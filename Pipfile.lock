@@ -105,10 +105,10 @@
         },
         "mkp": {
             "hashes": [
-                "sha256:17a1635a6d4193db780f5c97b0a4417343f21a29a6fd20fbd832de05832bf297"
+                "sha256:17187799bec23db56485a09dab8452a07321f6a74aae1ebe76c13d7c27e448a1"
             ],
             "index": "pypi",
-            "version": "==0.2"
+            "version": "==0.5"
         },
         "more-itertools": {
             "hashes": [
