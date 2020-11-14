@@ -1,4 +1,4 @@
-name: ci
+name: release
 
 on:
   push:
@@ -26,6 +26,8 @@ jobs:
       - name: Run tests
         run: |
           pipenv run pytest test/
+      - name: Build mkp
+        run: |
           pipenv run ./dist.py
       - name: Create Release
         id: create_release
